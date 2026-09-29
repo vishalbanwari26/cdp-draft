@@ -1,0 +1,211 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>cdp-draft</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0b0f14; --panel: #121821; --panel2: #18202b; --line: #243040; --text: #e6edf3; --muted: #8b98a8;
+  --faint: #5d6b7c; --ok: #3fb950; --ok-bg: rgba(63,185,80,.12); --warn: #f0b429; --warn-bg: rgba(240,180,41,.13);
+  --bad: #f47067; --bad-bg: rgba(244,112,103,.13); --info: #58a6ff; --info-bg: rgba(88,166,255,.12); --accent: #7ee2a8;
+}
+:root[data-theme="light"] {
+  --bg: #f6f8fa; --panel: #ffffff; --panel2: #f0f3f6; --line: #d8dee4; --text: #1f2328; --muted: #57606a;
+  --faint: #8c959f; --ok: #1a7f37; --ok-bg: #dafbe1; --warn: #9a6700; --warn-bg: #fff8c5; --bad: #cf222e;
+  --bad-bg: #ffebe9; --info: #0969da; --info-bg: #ddf4ff; --accent: #1a7f37;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; height: 100%; }
+body { background: var(--bg); color: var(--text); font: 14px/1.5 Inter, system-ui, sans-serif; }
+.mono { font-family: "JetBrains Mono", ui-monospace, monospace; }
+header { display: flex; align-items: center; gap: 16px; padding: 14px 20px; border-bottom: 1px solid var(--line); flex-wrap: wrap; }
+header h1 { font-size: 17px; margin: 0; font-weight: 700; letter-spacing: -.01em; }
+header h1 span { color: var(--accent); }
+header .src { color: var(--muted); font-size: 13px; }
+header .pills { margin-left: auto; display: flex; gap: 8px; flex-wrap: wrap; }
+.pill { font-size: 12px; padding: 3px 9px; border-radius: 999px; background: var(--panel2); border: 1px solid var(--line); color: var(--muted); white-space: nowrap; }
+.pill b { color: var(--text); font-weight: 600; }
+main { display: grid; grid-template-columns: 270px minmax(380px, 1fr) minmax(460px, 1.35fr); height: calc(100% - 58px); }
+aside, section { overflow: auto; }
+aside { border-right: 1px solid var(--line); padding: 14px 12px; }
+.h { font-size: 11px; text-transform: uppercase; letter-spacing: .08em; color: var(--faint); margin: 6px 8px 8px; font-weight: 600; }
+.item { display: block; width: 100%; text-align: left; background: none; border: 1px solid transparent; color: var(--text); padding: 9px 10px; border-radius: 8px; cursor: pointer; font: inherit; margin-bottom: 2px; }
+.item:hover { background: var(--panel2); }
+.item.active { background: var(--panel); border-color: var(--line); }
+.item .t { font-weight: 600; font-size: 13.5px; display: flex; justify-content: space-between; gap: 8px; align-items: center; }
+.item .s { color: var(--muted); font-size: 12px; margin-top: 2px; }
+.chip { font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px; white-space: nowrap; }
+.chip.answered { color: var(--ok); background: var(--ok-bg); }
+.chip.missing_evidence { color: var(--info); background: var(--info-bg); }
+.chip.needs_review, .chip.flag { color: var(--warn); background: var(--warn-bg); }
+.chip.wrong { color: var(--bad); background: var(--bad-bg); }
+#mid { padding: 18px 22px 40px; border-right: 1px solid var(--line); }
+.q { font-size: 16px; font-weight: 600; line-height: 1.45; margin: 4px 0 12px; }
+.card { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 14px 16px; margin-bottom: 14px; }
+.card .label { font-size: 11px; text-transform: uppercase; letter-spacing: .08em; color: var(--faint); font-weight: 600; margin-bottom: 8px; display: flex; justify-content: space-between; }
+.answer { font-size: 14.5px; }
+table.vals { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 13px; }
+table.vals td { padding: 5px 0; border-top: 1px solid var(--line); }
+table.vals td.n { text-align: right; font-family: "JetBrains Mono", monospace; white-space: nowrap; padding-left: 12px; }
+.cite { display: block; width: 100%; text-align: left; font: inherit; color: var(--text); background: var(--panel2); border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px; margin-top: 8px; cursor: pointer; }
+.cite:hover, .cite.on { border-color: var(--warn); }
+.cite .pg { font-size: 11px; font-weight: 600; color: var(--warn); margin-bottom: 2px; }
+.cite .qt { font-size: 12.5px; color: var(--muted); }
+.check { border-top: 1px solid var(--line); padding: 9px 0; }
+.check:first-of-type { border-top: 0; padding-top: 0; }
+.check .ct { font-weight: 600; font-size: 13px; display: flex; gap: 8px; align-items: baseline; }
+.check .ct .mark { font-family: "JetBrains Mono", monospace; }
+.check .ct .mark.ok { color: var(--ok); } .check .ct .mark.bad { color: var(--warn); }
+.check .cd { color: var(--muted); font-size: 12.5px; margin: 2px 0 0 22px; }
+.terms { margin: 4px 0 0 22px; display: flex; flex-wrap: wrap; gap: 6px; }
+.term { font: 12px "JetBrains Mono", monospace; background: var(--panel2); border: 1px solid var(--line); color: var(--text); border-radius: 6px; padding: 2px 7px; cursor: pointer; }
+.term:hover { border-color: var(--warn); }
+.missing { color: var(--info); }
+.errs { color: var(--warn); font-size: 12.5px; margin: 6px 0 0; padding-left: 18px; }
+.meta { color: var(--faint); font-size: 12px; }
+#right { background: var(--panel2); display: flex; flex-direction: column; }
+#right .bar { padding: 10px 16px; border-bottom: 1px solid var(--line); display: flex; justify-content: space-between; align-items: center; background: var(--panel); position: sticky; top: 0; z-index: 1; }
+#right .bar b { font-size: 13px; }
+#viewer { overflow: auto; flex: 1; padding: 14px; }
+#viewer img { width: 100%; display: block; border-radius: 6px; box-shadow: 0 4px 24px rgba(0,0,0,.35); background: #fff; }
+.empty { color: var(--faint); text-align: center; margin-top: 30%; padding: 0 30px; }
+.evalbox { font-size: 13px; }
+.evalbox .row { display: flex; justify-content: space-between; gap: 10px; }
+@media (max-width: 1100px) {
+  main { grid-template-columns: 1fr; height: auto; }
+  aside, #mid { border-right: 0; border-bottom: 1px solid var(--line); }
+  #right { min-height: 70vh; }
+}
+@media (max-width: 600px) { header, #mid { padding-left: 16px; padding-right: 16px; } }
+</style>
+</head>
+<body>
+<header>
+  <h1>cdp<span>-</span>draft</h1>
+  <div class="src" id="src">Loading…</div>
+  <div class="pills" id="pills"></div>
+</header>
+<main>
+  <aside id="left"></aside>
+  <section id="mid"><div class="empty">Loading results…</div></section>
+  <section id="right">
+    <div class="bar"><b id="pgtitle">Source page</b><span class="meta" id="pgnote"></span></div>
+    <div id="viewer"><div class="empty">Click a citation or a figure to open the page it came from.</div></div>
+  </section>
+</main>
+<script>
+const SHORT = { scope1: "Scope 1 emissions", scope2: "Scope 2 emissions", scope3: "Scope 3 by category", targets: "Reduction targets", by_gas: "Scope 1 by gas type" };
+const STATUS = { answered: "answered", missing_evidence: "missing evidence", needs_review: "needs review" };
+let R = null, sel = null;
+const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
+const fmt = v => typeof v === "number" ? v.toLocaleString("en-US", { maximumFractionDigits: 3 }) : esc(v);
+
+let focus = true, last = null;
+function toggleFocus() { focus = !focus; if (last) openPage(...last); }
+async function openPage(page, quotes, note) {
+  last = [page, quotes, note];
+  const qs = quotes.map(q => "q=" + encodeURIComponent(q)).join("&");
+  document.getElementById("pgtitle").textContent = `Page ${page} of ${R.pages}`;
+  document.getElementById("pgnote").innerHTML = `${esc(note || "")} <button class="term" id="zoom">${focus ? "Whole page" : "Zoom to quote"}</button>`;
+  document.getElementById("zoom").onclick = toggleFocus;
+  const v = document.getElementById("viewer");
+  const res = await fetch(`/api/page/${page}.png?${qs}${focus ? "&focus=true" : ""}`);
+  const top = parseFloat(res.headers.get("X-Highlight-Top"));
+  const url = URL.createObjectURL(await res.blob());
+  v.innerHTML = `<img alt="Report page ${page}" src="${url}">`;
+  const img = v.querySelector("img");
+  img.onload = () => { v.scrollTo({ top: isNaN(top) ? 0 : Math.max(0, top * img.clientHeight - 80), behavior: "smooth" }); };
+}
+
+function checksFor(a) {
+  if (!a.scope) return [];
+  return R.checks.filter(c => c.scopes.includes(a.scope));
+}
+
+function evalFor(id) { return R.eval && R.eval.answers ? R.eval.answers.find(e => e.id === id) : null; }
+
+function left() {
+  const flagged = R.checks.filter(c => !c.ok);
+  const qs = R.answers.map(a => {
+    const cs = checksFor(a), bad = cs.filter(c => !c.ok).length;
+    const sub = a.status === "answered" ? `${a.citations.length} citation${a.citations.length === 1 ? "" : "s"}${cs.length ? ` · ${cs.length - bad}/${cs.length} checks pass` : ""}` : a.status === "missing_evidence" ? "not guessed" : "failed validation";
+    return `<button class="item ${sel && sel.type === "q" && sel.id === a.id ? "active" : ""}" data-q="${a.id}">
+      <div class="t">${esc(SHORT[a.id] || a.id)} <span class="chip ${a.status}">${STATUS[a.status]}</span></div>
+      <div class="s">${sub}</div></button>`;
+  }).join("");
+  const rq = flagged.map((c, i) => `<button class="item ${sel && sel.type === "c" && sel.id === i ? "active" : ""}" data-c="${i}">
+      <div class="t">${esc(c.kind === "conflict" ? "Conflicting figures" : "Sum does not add up")} <span class="chip flag">review</span></div>
+      <div class="s">${esc(c.title.replace(": the report gives different values", ""))}</div></button>`).join("");
+  document.getElementById("left").innerHTML = `<div class="h">Questions</div>${qs}<div class="h" style="margin-top:18px">Review queue · ${flagged.length}</div>${rq || '<div class="meta" style="padding:0 8px">Nothing flagged.</div>'}
+    <div class="h" style="margin-top:18px">How it works</div>
+    <div class="meta" style="padding:0 8px 12px">The model drafts answers and lists every emissions figure it finds, with quotes. Code checks each quote is on its page, each number is in its quote, and the arithmetic. Nothing is filled from general knowledge.</div>`;
+  document.querySelectorAll("[data-q]").forEach(b => b.onclick = () => showQ(b.dataset.q));
+  document.querySelectorAll("[data-c]").forEach(b => b.onclick = () => showC(+b.dataset.c));
+}
+
+function checkHtml(c) {
+  const terms = [...c.terms, ...(c.stated ? [c.stated] : [])];
+  return `<div class="check"><div class="ct"><span class="mark ${c.ok ? "ok" : "bad"}">${c.ok ? "✓" : "!"}</span>${esc(c.title)}</div>
+    <div class="cd">${esc(c.detail)}</div>
+    <div class="terms">${terms.map(t => `<button class="term" data-p="${t.page}" data-qt="${esc(t.quote)}" title="${esc(t.quote)}">${esc(t.label)} ${fmt(t.mt)} · p${t.page}</button>`).join("")}</div></div>`;
+}
+
+function wireTerms(root) {
+  root.querySelectorAll("[data-p]").forEach(b => b.onclick = () => {
+    root.querySelectorAll(".cite.on").forEach(x => x.classList.remove("on"));
+    b.classList.add("on");
+    openPage(+b.dataset.p, [b.dataset.qt], b.classList.contains("term") ? b.textContent : "");
+  });
+}
+
+function showQ(id) {
+  sel = { type: "q", id }; left();
+  const a = R.answers.find(x => x.id === id), cs = checksFor(a), ev = evalFor(id);
+  const vals = a.values.length ? `<table class="vals">${a.values.map(v => `<tr><td>${esc(v.label)}${v.year ? ` <span class="meta">${esc(v.year)}</span>` : ""}</td><td class="n">${fmt(v.value)} ${esc(v.unit)}</td></tr>`).join("")}</table>` : "";
+  const cites = a.citations.map(c => `<button class="cite" data-p="${c.page}" data-qt="${esc(c.quote)}"><div class="pg">Page ${c.page}</div><div class="qt">“${esc(c.quote)}”</div></button>`).join("");
+  const evalHtml = ev ? `<div class="card evalbox"><div class="label">Against the answer read by hand <span class="chip ${ev.correct ? "answered" : "wrong"}">${ev.correct ? "correct" : "wrong"}</span></div><div>${esc(ev.note)}</div></div>` : "";
+  const mid = document.getElementById("mid");
+  mid.innerHTML = `<div class="meta">Question ${R.answers.indexOf(a) + 1} of ${R.answers.length} · CDP-style, paraphrased</div>
+    <div class="q">${esc(a.question)}</div>
+    <div class="card"><div class="label">Draft <span class="chip ${a.status}">${STATUS[a.status]}</span></div>
+      <div class="answer">${esc(a.answer) || '<span class="meta">No answer drafted.</span>'}</div>${vals}
+      ${a.missing ? `<div class="missing" style="margin-top:10px"><b>Missing:</b> ${esc(a.missing)}</div>` : ""}
+      ${a.errors.length ? `<ul class="errs">${a.errors.map(e => `<li>${esc(e)}</li>`).join("")}</ul>` : ""}
+    </div>
+    ${cites ? `<div class="card"><div class="label">Evidence <span>${a.citations.length} quote${a.citations.length === 1 ? "" : "s"}, each found on its page</span></div>${cites}</div>` : ""}
+    ${cs.length ? `<div class="card"><div class="label">Checked by code <span>${cs.filter(c => c.ok).length}/${cs.length} pass</span></div>${cs.map(checkHtml).join("")}</div>` : ""}
+    ${evalHtml}
+    <div class="meta">Searched pages ${a.retrieved_pages.join(", ")} · ${a.attempts === 1 ? "passed validation first time" : "sent back once by validation, then passed"}</div>`;
+  wireTerms(mid);
+  if (a.citations[0]) { mid.querySelector(".cite").classList.add("on"); openPage(a.citations[0].page, [a.citations[0].quote]); }
+}
+
+function showC(i) {
+  sel = { type: "c", id: i }; left();
+  const c = R.checks.filter(c => !c.ok)[i];
+  const mid = document.getElementById("mid");
+  mid.innerHTML = `<div class="meta">Review queue</div><div class="q">${esc(c.title)}</div>
+    <div class="card"><div class="label">Why this was flagged</div>${checkHtml(c)}</div>
+    <div class="card"><div class="label">Sources</div>${c.terms.map(t => `<button class="cite" data-p="${t.page}" data-qt="${esc(t.quote)}"><div class="pg">${esc(t.label)} · ${fmt(t.mt)} million t</div><div class="qt">“${esc(t.quote)}”</div></button>`).join("")}</div>
+    <div class="meta">Flagged by code, not by the model. A person decides which figure is right before anything is submitted.</div>`;
+  wireTerms(mid);
+  const first = mid.querySelector(".cite");
+  if (first) { first.classList.add("on"); openPage(+first.dataset.p, [first.dataset.qt]); }
+}
+
+(async () => {
+  R = await (await fetch("/api/results")).json();
+  const ok = R.checks.filter(c => c.ok).length;
+  document.getElementById("src").textContent = `${R.company} · ${R.report} · ${R.pages} pages · reporting year ${R.year}`;
+  const ev = R.eval ? `<span class="pill">correct vs hand-read answers <b>${R.eval.correct}/${R.eval.total}</b></span>` : "";
+  document.getElementById("pills").innerHTML = `<span class="pill"><b>${R.facts.length}</b> figures extracted · <b>${R.rejected_facts.length}</b> rejected</span>
+    <span class="pill">checks <b>${ok}</b> pass · <b>${R.checks.length - ok}</b> flagged</span>${ev}<span class="pill mono">${esc(R.model)}</span>`;
+  const first = new URLSearchParams(location.search).get("q") || R.answers[0].id;
+  showQ(first);
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,67 @@
+{
+ "report": "HM_ASR25_en.pdf",
+ "prepared_from": "Read by hand from the report: pages 94, 113, 117, 118, 119, 120. Figures in million t CO2e, reporting year 2025.",
+ "answers": {
+  "scope1": {
+   "status": "answered",
+   "note": "Group gross Scope 1 is 61.3 (page 120). Cement 59.4 + aggregates 0.50 + other lines 0.3 + off-site transport 1.1 = 61.3 (page 117).",
+   "accept_any": [
+    [
+     61.3
+    ]
+   ]
+  },
+  "scope2": {
+   "status": "answered",
+   "note": "Group Scope 2 is 4.8 location-based and 4.4 market-based (pages 118 and 120).",
+   "accept_any": [
+    [
+     4.8,
+     4.4
+    ]
+   ]
+  },
+  "scope3": {
+   "status": "answered",
+   "note": "Scope 3 total 24.5: category 1 = 8.6, 3 = 3.7, 4 = 2.9, 9 = 2.4, 15 = 6.9 (pages 119 and 120).",
+   "accept_any": [
+    [
+     24.5,
+     8.6,
+     3.7,
+     2.9,
+     2.4,
+     6.9
+    ]
+   ]
+  },
+  "targets": {
+   "status": "answered",
+   "accept_any": [
+    [
+     400,
+     576
+    ],
+    [
+     24,
+     65,
+     25
+    ]
+   ],
+   "forbid": [
+    {
+     "value": 512,
+     "year": 2020
+    }
+   ],
+   "note": "Two correct ways to answer, both for the cement business line with base year 2020 and target year 2030: specific net Scope 1 below 400 kg CO2 per tonne of cementitious material (576 kg in 2020, 512 kg in 2025; pages 94, 113, 117), or the SBTi-aligned targets of -24% gross Scope 1, -65% gross Scope 2 and -25% Scope 3 from purchased cement and clinker (page 94)."
+  },
+  "by_gas": {
+   "status": "missing_evidence",
+   "note": "The report gives CO2e totals only. No breakdown by gas (CH4, N2O and so on) appears anywhere in the 351 pages, so the right answer is that the evidence is missing.",
+   "accept_any": [
+    []
+   ]
+  }
+ }
+}
