@@ -201,7 +201,8 @@ class Report:
                 box |= r
             w = max(box.width + 120, 460)
             cx = (box.x0 + box.x1) / 2
-            clip = pymupdf.Rect(cx - w / 2, box.y0 - 110, cx + w / 2, box.y1 + 110) & page.rect
+            # Enough context to read the quote in place, and no more of the page.
+            clip = pymupdf.Rect(cx - w / 2, box.y0 - 60, cx + w / 2, box.y1 + 75) & page.rect
             zoom = 2.6
         pix = page.get_pixmap(matrix=pymupdf.Matrix(zoom, zoom), clip=clip)
         # Draw on a copy only: reopen so later renders start clean.

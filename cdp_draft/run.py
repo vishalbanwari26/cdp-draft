@@ -25,6 +25,8 @@ def main() -> None:
     ap.add_argument("pdf")
     ap.add_argument("--year", type=int, default=2025)
     ap.add_argument("--company", default="Heidelberg Materials")
+    ap.add_argument("--source", default="Heidelberg Materials AG, Annual and Sustainability Report 2025")
+    ap.add_argument("--rights", default="Heidelberg Materials AG")
     ap.add_argument("--out", default="out/results.json")
     args = ap.parse_args()
     load_dotenv()
@@ -39,6 +41,8 @@ def main() -> None:
     result = {
         "company": args.company,
         "report": Path(args.pdf).name,
+        "source": args.source,
+        "rights": args.rights,
         "pages": len(report.pages),
         "year": args.year,
         "model": llm.model,

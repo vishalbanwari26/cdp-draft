@@ -2,7 +2,7 @@
 
 Drafts answers to CDP-style climate questions from a company's own sustainability report, with every answer tied to the exact passage it came from. It checks the report's arithmetic in code, and says "missing evidence" instead of guessing.
 
-A one-day prototype, built to understand one piece of the problem Briink works on. It is not their product and uses no data of theirs. The example is Heidelberg Materials' public Annual and Sustainability Report 2025 (351 pages).
+A one-day prototype, built to understand one piece of the problem Briink works on. It is not their product and uses no data of theirs. The example is Heidelberg Materials' public [Annual and Sustainability Report 2025](https://www.heidelbergmaterials.com/en/company/annual-reports-sustainability-reports) (351 pages).
 
 ## Demo
 
@@ -63,3 +63,9 @@ Model calls are cached in `cache/`, so a rerun replays the same outputs without 
 - Keyword search is enough for a well-structured report. Messier documents would need better retrieval.
 - A table figure's year comes from the model reading the column header. Code can't verify that part yet.
 - The report PDF is not included. Download it from Heidelberg Materials' investor relations site.
+
+## Source and copyright
+
+Example report: Heidelberg Materials AG, Annual and Sustainability Report 2025, © Heidelberg Materials AG. [Available from Heidelberg Materials](https://www.heidelbergmaterials.com/en/company/annual-reports-sustainability-reports).
+
+The report itself is not part of this repository. The demo images and README show short excerpts of it (single sentences and table rows, cropped to the quoted passage) to analyse and verify the figures. Each excerpt names its page. This project is not affiliated with or endorsed by Heidelberg Materials or Briink.
